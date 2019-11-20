@@ -6,11 +6,13 @@ from django.shortcuts import render, get_object_or_404
 from .forms import PostForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from .forms import SignupForm
+from django.contrib.auth.models import User
 
 
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-    return render(request, 'blog/post_list.html',{'posts':posts})
+    return render(request, 'blog/post_list.html', {'posts': posts})
 
 
 def post_detail(request, pk):
@@ -54,5 +56,36 @@ def error500(request):
     return render(request, "blog/500.html", status=500)
 
 
+def signup(request):  # 역시 GET/POST 방식을 사용하여 구현한다.
+    if request.method == "GET":
+        return render(request, 'blog/signup.html', {'f': SignupForm()})
 
-#def log_in(request):
+    elif request.method == "POST":
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['password'] == form.cleaned_data['password_check']:
+                # cleaned_data는 사용자가 입력한 데이터를 뜻한다.
+                # 즉 사용자가 입력한 password와 password_check가 맞는지 확인하기위해 작성해주었다.
+
+                new_user = User.objects.create_user(form.cleaned_data['username'], form.cleaned_data['email'],
+                                                    form.cleaned_data['password'])
+                # User.object.create_user는 사용자가 입력한 name, email, password를 가지고 아이디를 만든다.
+                # 바로 .save를 안해주는 이유는 User.object.create를 먼저 해주어야 비밀번호가 암호화되어 저장된다.
+
+                new_user.last_name = form.cleaned_data['last_name']
+                new_user.first_name = form.cleaned_data['first_name']
+                # 나머지 입력하지 못한 last_name과, first_name은 따로 지정해준다.
+                new_user.save()
+
+                return HttpResponseRedirect(reverse('vote:index'))
+            else:
+                return render(request, 'blog/signup.html', {'f': form,
+                                            'error': '비밀번호와 비밀번호 확인이 다릅니다.'})
+
+        else:
+            return render(request, 'blog/signup.html', {'f': form})
+
+
+'''
+def log_in(request):
+'''
