@@ -4,6 +4,8 @@ from .models import Post
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
 from .forms import PostForm
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 def post_list(request):
@@ -36,7 +38,6 @@ def post_edit(request, pk):
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = request.user
             post.published_date = timezone.now()
             post.save()
             return redirect('post_detail', pk=post.pk)
@@ -45,11 +46,13 @@ def post_edit(request, pk):
     return render(request, 'blog/post_edit.html', {'form': form})
 
 
-def handler404(request, *args, **argv):
-    response = render_to_response('404.html', {},
-                                  context_instance=RequestContext(request))
-    response.status_code = 404
-    return response
+def error404(request):
+    return render(request, "blog/404.html", status=404)
+
+
+def error500(request):
+    return render(request, "blog/500.html", status=500)
+
 
 
 #def log_in(request):
