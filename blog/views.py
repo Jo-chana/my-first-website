@@ -15,6 +15,7 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
 
+
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -27,6 +28,7 @@ def post_new(request):
     else:
         form = PostForm()
     return render(request, 'blog/post_edit.html', {'form': form})
+
 
 def post_edit(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -41,6 +43,13 @@ def post_edit(request, pk):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/post_edit.html', {'form': form})
+
+
+def handler404(request, *args, **argv):
+    response = render_to_response('404.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 404
+    return response
 
 
 #def log_in(request):
