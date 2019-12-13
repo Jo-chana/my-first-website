@@ -50,14 +50,6 @@ def post_edit(request, pk):
     return render(request, 'blog/post_edit.html', {'form': form})
 
 
-def error404(request):
-    return render(request, "blog/404.html")
-
-
-def error500(request):
-    return render(request, "blog/500.html")
-
-
 def signup(request):  # 역시 GET/POST 방식을 사용하여 구현한다.
     if request.method == "GET":
         return render(request, 'blog/signup.html', {'f': SignupForm()})
