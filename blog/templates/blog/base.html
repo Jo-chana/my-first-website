@@ -1,7 +1,7 @@
 {% load static %}
 <html>
         <head>
-        	<link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+        	<link href="//fonts.googleapis.com/css?family=Serif&subset=latin,latin-ext" rel="stylesheet" type="text/css">
 	        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 			<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
             <link rel="stylesheet" href="{% static 'css/blog.css' %}">
@@ -12,7 +12,6 @@
         <h1><a href="/">Chana's room</a></h1>
         
         <a href="{% url 'signup' %}" class="top-menu"><span class="glyphicon glyphicon-user"></span></a>
-        {
         {% if user.is_authenticated %}
             <a href="{% url 'post_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
         {% endif %}

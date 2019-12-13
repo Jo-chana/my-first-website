@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+{% extends 'blog/base.html' %}
+
+{% block content %}
+
 {% if error %}
 <h3 style="color:red">{{error}}</h3>
 {% endif %}
-<form action="" method="POST">
+	<form action="" method="POST">
 {% csrf_token %}
 <table>
-{{ f.as_table }}
+	{{ f.as_table }}
 </table>
-<input type="submit" value="회원가입">
+	<input type="submit" value="회원가입">
 
 </form>
-</body>
-</html>
+
+{% endblock %}    

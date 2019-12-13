@@ -1,13 +1,15 @@
 from django.shortcuts import redirect
 from django.shortcuts import render
-from .models import Post
+from .models import Post, Ainews
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404
-from .forms import PostForm
+from .forms import PostForm, AinewsForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from .forms import SignupForm
 from django.contrib.auth.models import User
+from bs4 import BeautifulSoup
+import requests
 
 
 def post_list(request):
@@ -31,7 +33,7 @@ def post_new(request):
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
-    return render(request, 'blog/post_edit.html', {'form': form})
+    return render(request, 'blog/post_new.html', {'form': form})
 
 
 def post_edit(request, pk):
@@ -89,3 +91,26 @@ def signup(request):  # 역시 GET/POST 방식을 사용하여 구현한다.
 '''
 def log_in(request):
 '''
+
+
+def ai_news(request):
+    req = requests.get('https://flipboard.com/topic/ai')
+    html = req.text
+    soup = BeautifulSoup(html, 'html.parser')
+    informations = soup.select(
+        '#content > div > main > ul > li > div > article > div > h1 > a'
+    )
+
+    newslist = []
+    for i in range(len(informations)):
+        news = Ainews()
+        news.title = informations[i].text
+        news.text = informations[i].get('href')
+        images = soup.select(
+            '#content > div > main > ul > li:nth-child(%d) > div > article > div > a > div > img' % (i+1)
+        )
+        news.image = images[0].get('src')
+        newslist.append(news)
+
+    return render(request, 'blog/ai_news.html', {'newslist': newslist})
+
