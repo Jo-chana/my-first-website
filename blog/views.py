@@ -51,11 +51,11 @@ def post_edit(request, pk):
 
 
 def error404(request):
-    return render(request, "blog/404.html", status=404)
+    return render(request, "blog/404.html")
 
 
 def error500(request):
-    return render(request, "blog/500.html", status=500)
+    return render(request, "blog/500.html")
 
 
 def signup(request):  # 역시 GET/POST 방식을 사용하여 구현한다.
