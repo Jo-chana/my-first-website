@@ -74,7 +74,7 @@ def signup(request):  # 역시 GET/POST 방식을 사용하여 구현한다.
                 return HttpResponseRedirect(reverse('vote:index'))
             else:
                 return render(request, 'blog/signup.html', {'f': form,
-                                            'error': '비밀번호와 비밀번호 확인이 다릅니다.'})
+                                                            'error': '비밀번호와 비밀번호 확인이 다릅니다.'})
 
         else:
             return render(request, 'blog/signup.html', {'f': form})
@@ -86,23 +86,27 @@ def log_in(request):
 
 
 def ai_news(request):
-    req = requests.get('http://flipboard.com/topic/ai')
-    html = req.text
-    soup = BeautifulSoup(html, 'html.parser')
-    informations = soup.select(
-        '#content > div > main > ul > li > div > article > div > h1 > a'
-    )
-
-    newslist = []
-    for i in range(len(informations)):
-        news = Ainews()
-        news.title = informations[i].text
-        news.text = informations[i].get('href')
-        images = soup.select(
-            '#content > div > main > ul > li:nth-child(%d) > div > article > div > a > div > img' % (i+1)
+    try:
+        req = requests.get('http://flipboard.com/topic/ai')
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+        informations = soup.select(
+            '#content > div > main > ul > li > div > article > div > h1 > a'
         )
-        news.image = images[0].get('src')
-        newslist.append(news)
+
+        newslist = []
+        for i in range(len(informations)):
+            news = Ainews()
+            news.title = informations[i].text
+            news.text = informations[i].get('href')
+            images = soup.select(
+                '#content > div > main > ul > li:nth-child(%d) > div > article > div > a > div > img' % (i + 1)
+            )
+            if images:
+                news.image = images[0].get('src')
+            newslist.append(news)
+    except:
+        return "No response"
 
     return render(request, 'blog/ai_news.html', {'newslist': newslist})
 
