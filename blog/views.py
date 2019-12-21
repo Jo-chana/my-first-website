@@ -86,7 +86,7 @@ def log_in(request):
 
 
 def ai_news(request):
-    req = requests.get('https://flipboard.com/topic/ai')
+    req = requests.get('http://flipboard.com/topic/ai')
     html = req.text
     soup = BeautifulSoup(html, 'html.parser')
     informations = soup.select(
